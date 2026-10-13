@@ -2,7 +2,7 @@
 
 Nogbase helps real-estate brokers and property developers work with their
 Nogbase inventory, including off-plan projects, from their AI assistant. This
-plugin pairs the Nogbase connector with three skills that turn common sales
+plugin pairs the Nogbase connector with four skills that turn common sales
 tasks into repeatable steps, and adds a Nogbase API skill for coding agents:
 
 | Skill | What it does |
@@ -10,12 +10,14 @@ tasks into repeatable steps, and adds a Nogbase API skill for coding agents:
 | Sales offer | A branded offer for one unit at the quoted or list price, with every payment-plan installment computed by Nogbase, the offer terms and fees, and your company letterhead. |
 | Client shortlist | Turns a buyer's brief (budget and currency, bedrooms, area, handover window, booking and post-handover limits) into filtered searches and compares three to five options in one table. |
 | Project brief | A project summary with the developer's published handover, unit mix and starting prices, payment plans, amenities, brochures, and sales contacts, in English, Arabic, or both. |
+| Deal check | Nogbase's investment estimate for one off-plan unit: entry cost, the payment schedule, price against DLD sales, value scenarios with the sale at handover, break-even and, from a rent you give, the yield. Every figure shows its source and as-of date, with Nogbase's disclaimer; it is an estimate, not financial advice. |
 | Nogbase API | For coding agents with a terminal, such as Claude Code and Codex: reads and changes your Nogbase workspace data through the `nogbase` CLI with your own sign-in, at your request, and asks before deleting or bulk changes. |
 
 Try: "Prepare a one-page sales offer for unit B827 in Peace Lagoons at AED
 1,000,000 with my company letterhead", "Compare three projects for a client who
-wants a one-bedroom with at most 10% on booking", or "Write a project brief for
-this project in Arabic."
+wants a one-bedroom with at most 10% on booking", "Write a project brief for
+this project in Arabic", or "Is unit B827 in Peace Lagoons a good investment if it
+rents for AED 90,000 a year?"
 
 ## Requirements
 

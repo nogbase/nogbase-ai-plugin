@@ -5,12 +5,12 @@
     "email": "support@nogbase.ae",
     "url": "https://nogbase.ae"
   },
-  "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist and project brief skills, plus the Nogbase API skill for coding agents.",
+  "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist, project brief and deal check skills, plus the Nogbase API skill for coding agents.",
   "plugins": [
     {
       "name": "nogbase",
       "source": "./nogbase",
-      "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist and project brief skills, plus the Nogbase API skill for coding agents."
+      "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist, project brief and deal check skills, plus the Nogbase API skill for coding agents."
     }
   ]
 }

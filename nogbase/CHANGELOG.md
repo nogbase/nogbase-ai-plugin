@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+Adds the `deal-check` skill. It runs the connector's read-only `evaluate_unit`
+tool (19 tools in all), or `nogbase api` from a terminal, and presents
+Nogbase's investment estimate for one unit as returned. It shows each block's
+status, sources, as-of dates and warnings, states verdicts as facts and never
+as advice, and always shows Nogbase's disclaimer and attribution from the
+response. It computes nothing itself.
+
 ## 1.2.0
 
 Adds the Nogbase API skill for coding agents with a terminal (needs nogbase CLI

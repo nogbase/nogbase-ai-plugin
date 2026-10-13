@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nogbase",
-  "version": "1.2.0",
-  "description": "Real-estate sales workflows on Nogbase: branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, and a Nogbase API skill that lets coding agents read and change your workspace data with your own sign-in, at your request.",
+  "version": "1.3.0",
+  "description": "Real-estate sales workflows on Nogbase: branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, deal checks that present Nogbase's investment estimate for a unit, and a Nogbase API skill that lets coding agents read and change your workspace data with your own sign-in, at your request.",
   "author": {
     "name": "Nogbase Development",
     "email": "support@nogbase.ae",
@@ -16,7 +16,7 @@
       "interface": {
         "displayName": "Nogbase",
         "shortDescription": "Property search, offers & API",
-        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nVersion 1.2 adds four skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), and Nogbase API (for coding agents with a terminal, such as Claude Code and Codex: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector's tools read inventory your workspace may see. The Nogbase API skill can change data when you ask it to, within your own permissions. A Nogbase broker or developer account is required.",
+        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nVersion 1.3 adds five skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), and Nogbase API (for coding agents with a terminal, such as Claude Code and Codex: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector's tools read inventory your workspace may see. The Nogbase API skill can change data when you ask it to, within your own permissions. A Nogbase broker or developer account is required.",
         "developerName": "Nogbase Development",
         "category": "Business & Operations",
         "capabilities": ["Read", "Write"],

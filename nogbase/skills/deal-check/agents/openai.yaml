@@ -1,0 +1,11 @@
+interface:
+  display_name: "Deal check"
+  short_description: "Investment check for one unit"
+  default_prompt: "Run a deal check on a unit I am offering a client, at the developer's default plan, with an expected rent of AED 110,000 a year."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nogbase"
+      description: "Nogbase remote connector (read-only inventory and the investment evaluation)"
+      transport: "streamable_http"
+      url: "https://api.nogbase.ae/mcp"

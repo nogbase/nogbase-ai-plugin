@@ -1,9 +1,9 @@
-# Nogbase AI connector plugin (1.2, skills)
+# Nogbase AI connector plugin (1.3, skills)
 
 **Status (2026-10-13): published at https://github.com/nogbase/nogbase-ai-plugin; directory submissions pending.** This directory is the
-version 1.2 plugin package for the Nogbase remote MCP connector
-(`https://api.nogbase.ae/mcp`). It adds four skills and changes nothing on
-the server; the `nogbase-api` skill uses the separately installed `nogbase`
+version 1.3 plugin package for the Nogbase remote MCP connector
+(`https://api.nogbase.ae/mcp`). It adds five skills (the deal-check skill uses the
+`evaluate_unit` tool added on the server in October 2026); the `nogbase-api` skill uses the separately installed `nogbase`
 CLI. The public repository and its skill ZIPs may be published as soon as the
 owner approves. Each directory submission waits until that directory has
 approved the 1.0 connector. See [Publishing](#publishing).
@@ -31,6 +31,7 @@ ai-connector-plugin/                  repository root (= marketplace root)
     │   ├── sales-offer/SKILL.md          + agents/openai.yaml
     │   ├── client-shortlist/SKILL.md     + agents/openai.yaml
     │   ├── project-brief/SKILL.md        + agents/openai.yaml
+    │   ├── deal-check/SKILL.md           + agents/openai.yaml
     │   └── nogbase-api/SKILL.md          + agents/openai.yaml (needs the nogbase CLI, not the connector)
     ├── assets/logo.svg               square canvas around the official Nogbase mark
     ├── README.md                     listing text (Anthropic shows it as the description)
@@ -102,7 +103,7 @@ Checks that need no sign-in (run from this directory):
 ```bash
 claude plugin validate --strict ./nogbase   # plugin manifest, .mcp.json, skills
 claude plugin validate --strict .           # marketplace
-claude --plugin-dir ./nogbase plugin details nogbase   # 4 skills, 1 MCP server
+claude --plugin-dir ./nogbase plugin details nogbase   # 5 skills, 1 MCP server
 ```
 
 ### Claude Code
@@ -111,7 +112,7 @@ claude --plugin-dir ./nogbase plugin details nogbase   # 4 skills, 1 MCP server
    (or install it: `claude plugin marketplace add ./` then
    `claude plugin install nogbase@nogbase-ai`).
 2. The skills appear as `/nogbase:sales-offer`, `/nogbase:client-shortlist`,
-   `/nogbase:project-brief`, and `/nogbase:nogbase-api`, and load
+   `/nogbase:project-brief`, `/nogbase:deal-check`, and `/nogbase:nogbase-api`, and load
    automatically when a request matches.
 3. Sign-in: the Nogbase authorization server accepts OAuth client ID
    metadata documents, so Claude Code signs in to the plugin's server with
@@ -129,7 +130,7 @@ claude --plugin-dir ./nogbase plugin details nogbase   # 4 skills, 1 MCP server
 
    `codex mcp list` then shows the plugin's `nogbase` server, and the skills
    load as `nogbase:sales-offer`, `nogbase:client-shortlist`,
-   `nogbase:project-brief`, `nogbase:nogbase-api`.
+   `nogbase:project-brief`, `nogbase:deal-check`, `nogbase:nogbase-api`.
 2. Sign-in: Codex signs in to the plugin's server with its own published
    identity (OAuth client ID metadata document); approve the Nogbase page
    when Codex opens it and choose the workspace.
@@ -145,6 +146,7 @@ claude --plugin-dir ./nogbase plugin details nogbase   # 4 skills, 1 MCP server
 | project-brief | "Tell me about Peace Lagoons: developer, location, unit mix and starting price." (P3) | `get_inventory_project` + `get_sales_offer_data` (`purpose: project_brief`); handover as the developer's published Q2 2027 |
 | project-brief | "Write a project brief for Peace Lagoons in Arabic." | `locale: ar-AE` labels; translated text marked as the model's |
 | sales-offer | "Prepare a one-page sales offer for unit B827 in Peace Lagoons at AED 1,000,000 with my company letterhead and every payment-plan installment." (P4) | `get_sales_offer_data` with `unitId`, `offerPrice: "1000000"`, `purpose: sales_offer_one_page`; `get_my_brand_context`; every plan re-priced (20% = AED 200,000); "Nogbase stored nothing" |
+| deal-check | "Is unit B827 in Peace Lagoons a good investment if it rents for AED 90,000 a year? Show what the buyer would make selling at handover." (P6) | `search_inventory_units` → `evaluate_unit` with `assumptions.annualRent` `"90000"` + `currencyCode` AED; blocks with status and sources; verdicts as facts; disclaimer and attribution from the response |
 | sales-offer (negative) | "Mark unit B827 in Peace Lagoons as sold." (N1) | No tool call; explains the connector is read-only |
 
 ## Open points before submission
@@ -169,7 +171,7 @@ approved the 1.0 connector.
 
 Anthropic (plugin bundle):
 
-1. Create the public repository from this directory; push; tag `nogbase--v1.2.0`
+1. Create the public repository from this directory; push; tag `nogbase--v1.3.0`
    (`claude plugin tag ./nogbase`).
 2. `claude plugin validate --strict ./nogbase` in the new repository.
 3. [claude.ai/directory/manage](https://claude.ai/directory/manage) → Submit
@@ -187,14 +189,16 @@ OpenAI (new version of the existing Nogbase plugin):
    published Nogbase plugin and start a new version (**With MCP**, same
    universal URL `https://api.nogbase.ae/mcp`), then **Scan Tools**.
 2. Skills: upload a ZIP whose single top-level directory is `nogbase/`
-   without the MCP files (the portal carries the server). It keeps all four
+   without the MCP files (the portal carries the server). It keeps all five
    skills, because Codex shares this directory and has a terminal:
-   `zip -r nogbase-1.2.0.zip nogbase -x 'nogbase/.mcp.json' 'nogbase/mcp.json' 'nogbase/.claude-plugin/*'`.
+   `zip -r nogbase-1.3.0.zip nogbase -x 'nogbase/.mcp.json' 'nogbase/mcp.json' 'nogbase/.claude-plugin/*'`.
    Wait for the skill scans (up to 2 hours).
-3. Starter prompts: the three in `plugin.json`. Test cases: P1-P5 and N1, N3,
+3. Starter prompts: the three in `plugin.json`. Test cases: P1-P6 and N1, N3,
    N4 from the submission pack, noting which skill each exercises.
-4. Release notes: "Update 1.2.0: adds Sales offer, Client shortlist, Project
-   brief and Nogbase API skills. The Nogbase API skill can change data through
-   the user's own nogbase CLI sign-in. Server, tools and annotations
+4. Release notes: "Update 1.3.0: adds the read-only Evaluate a unit tool (an
+   investment estimate for one unit from DLD sales, with sources, as-of dates
+   and a disclaimer) and the Sales offer, Client shortlist, Project brief, Deal
+   check and Nogbase API skills. The Nogbase API skill can change data through
+   the user's own nogbase CLI sign-in. Other tools and annotations
    unchanged."
 5. Submit for review; publish after approval.
