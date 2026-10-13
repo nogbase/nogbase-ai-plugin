@@ -1,0 +1,11 @@
+interface:
+  display_name: "Client shortlist"
+  short_description: "Compare 3-5 options for a buyer"
+  default_prompt: "Shortlist and compare projects for my client: 2 bedrooms, budget AED 2,500,000, at most 10% on booking."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nogbase"
+      description: "Nogbase remote connector (read-only inventory, offer data, and branding)"
+      transport: "streamable_http"
+      url: "https://api.nogbase.ae/mcp"

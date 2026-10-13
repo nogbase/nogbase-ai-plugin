@@ -1,0 +1,11 @@
+interface:
+  display_name: "Sales offer"
+  short_description: "Unit offer with every installment"
+  default_prompt: "Prepare a sales offer for this unit with my company letterhead and every payment-plan installment."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nogbase"
+      description: "Nogbase remote connector (read-only inventory, offer data, and branding)"
+      transport: "streamable_http"
+      url: "https://api.nogbase.ae/mcp"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nogbase API"
+  short_description: "Nogbase v1 API from your terminal"
+  default_prompt: "Using the nogbase CLI, list my Nogbase collections and how many records each has."

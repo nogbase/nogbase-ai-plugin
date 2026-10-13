@@ -1,0 +1,11 @@
+interface:
+  display_name: "Project brief"
+  short_description: "Project summary in English or Arabic"
+  default_prompt: "Write a project brief for this project in English and Arabic."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nogbase"
+      description: "Nogbase remote connector (read-only inventory, offer data, and branding)"
+      transport: "streamable_http"
+      url: "https://api.nogbase.ae/mcp"
