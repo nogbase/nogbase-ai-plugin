@@ -5,12 +5,17 @@
     "email": "support@nogbase.ae",
     "url": "https://nogbase.ae"
   },
-  "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist, project brief and deal check skills, plus the Nogbase API skill for coding agents.",
+  "description": "Nogbase plugins: the read-only Nogbase connector with sales offer, client shortlist, project brief and deal check skills, and the Nogbase API skill for coding agents.",
   "plugins": [
     {
       "name": "nogbase",
       "source": "./nogbase",
-      "description": "Nogbase plugin: the Nogbase connector with sales offer, client shortlist, project brief and deal check skills, plus the Nogbase API skill for coding agents."
+      "description": "The read-only Nogbase connector with sales offer, client shortlist, project brief and deal check skills."
+    },
+    {
+      "name": "nogbase-api",
+      "source": "./nogbase-api",
+      "description": "The Nogbase API skill for coding agents: reads and changes workspace data through your own nogbase CLI sign-in, at your request."
     }
   ]
 }

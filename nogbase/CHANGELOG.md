@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.0
+
+The Nogbase API skill moved to the separate Nogbase API plugin in the same
+marketplace. This plugin is now read-only: the connector and the sales offer,
+client shortlist, project brief and deal check skills only read Nogbase data
+and never change it. The skills now use only the connector's tools: the
+deal-check and client-shortlist skills no longer describe running the
+`nogbase` command-line tool.
+
+## 1.3.1
+
+The Nogbase API skill no longer shows a download-and-run install command. It
+links to the CLI install instructions and leaves installing to the user.
+
 ## 1.3.0
 
 Adds the `deal-check` skill. It runs the connector's read-only `evaluate_unit`

@@ -11,9 +11,9 @@ never see or store a token or API key.
 ## 1. Check the CLI and the sign-in
 
 1. Run `nogbase version`. If the command is missing, or the version is below
-   0.3.0, ask the user to install or update it:
-   `curl -fsSL https://raw.githubusercontent.com/nogbase/nogbase-cli/main/install.sh | sh`
-   (on Windows, the PowerShell line in the CLI README).
+   0.3.0, ask the user to install or update it themselves by following
+   https://github.com/nogbase/nogbase-cli#install (macOS, Linux and Windows).
+   Don't run an installer yourself.
 2. Run `nogbase status --json`. If it is not signed in, ask the user to run
    `nogbase login` themselves. It opens their browser; on a machine without
    one it prints a link and a code. Never ask for a password, token or API key,
@@ -71,9 +71,24 @@ nogbase api PUT /v1/collections/<collection>/<id> --data @record.json --if-match
 - Ask before deleting anything, before changing more than a handful of records,
   and before any change to users, API keys, permissions or workspace settings.
 
+## Investment evaluation
+
+To evaluate one unit as an investment, use the evaluation endpoint. It is read-only and stores nothing:
+
+```bash
+nogbase api POST /v1/inventory/projects/<projectId>/evaluation --data @evaluation.json
+```
+
+- The body takes `unitId` (or a described `unit`), and optionally `paymentPlanId`, `purchaseDate` and `assumptions`. Money in the body is `{"amountMicros": <integer>, "currencyCode": "AED"}` (AED 110,000 is `110000000000`). A rent, yield or after-handover view needs a gross annual rent from the user (`assumptions.annualRent`). Never suggest or estimate one.
+- Add `-H "Accept-Language: ar"` for Arabic server text, and `-H "X-Display-Currency: USD"` for a display currency.
+- The response has `data` with `meta` beside it. Read `details.field` and `details.reason` on a `validation_error`.
+- Present it as Nogbase returns it. Never compute, round, convert, re-total or extend a figure, and never fill a gap with a typical value. Show the amounts exactly as returned: there are no `formatted` labels here, so state an amount with its currency by moving the decimal point six places in `amountMicros` (110000000000 is AED 110,000), and a rate by moving the decimal point two places in `bps` (1250 is 12.50%). Move digits only; never round. Give each block's `status`, sources, as-of dates and warnings. A block that is unavailable is "unavailable", never zero.
+- Verdicts are statements of fact about a scenario, never advice. Never promise a return, and never tell anyone to buy or sell.
+- Always end with `data.disclaimer` and `data.attribution` word for word from this response, and the `meta.asOf` date.
+
 ## Language and currency
 
-- Nogbase writes its own labels and server text in English and Arabic (`locale: "ar-AE"` on connector tools; `-H "Accept-Language: ar"` with `nogbase api`). For any other language, you may translate your own wording and Nogbase's descriptions, and say that the translation is yours.
+- Nogbase writes its own labels and server text in English and Arabic (`-H "Accept-Language: ar"` with `nogbase api`). For any other language, you may translate your own wording and Nogbase's descriptions, and say that the translation is yours.
 - When translating, never change numbers, currency labels, project, developer, unit or area names, or codes. Never reword a disclaimer: show Nogbase's English or Arabic disclaimer next to your translation.
 - Never convert money yourself. Ask Nogbase to:
   - **The sales offer:** `currency` (the company's own rates, for its own document; disclosed in `offer.conversion`).

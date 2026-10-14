@@ -25,7 +25,7 @@ Ask only for what blocks the next step. The evaluation needs nothing about the b
 
 ## 2. Run the evaluation
 
-**Through the connector**, call `evaluate_unit`:
+Call `evaluate_unit`:
 
 | Input | Value |
 | --- | --- |
@@ -53,22 +53,14 @@ What-ifs. Money is in major units as a decimal string (`"110000"`), with `assump
 
 If `evaluate_unit` is not among the connector's tools, the evaluation is not enabled for this connection. Tell the user, and never reproduce it by hand.
 
-**From a terminal** with the `nogbase` CLI (see the Nogbase API skill for sign-in):
-
-```bash
-nogbase api POST /v1/inventory/projects/<projectId>/evaluation --data @evaluation.json
-```
-
-The body has the same fields, except that money is `{"amountMicros": <integer>, "currencyCode": "AED"}` (AED 110,000 is `110000000000`). Add `-H "Accept-Language: ar"` for Arabic and `-H "X-Display-Currency: USD"` for a display currency. The response has no `formatted` labels and its `meta` sits beside `data`.
-
 Errors:
 
 - **Not found:** the project or unit is not readable by this workspace, or the evaluation is not enabled for it. Never try other ids.
-- **`validation_error`:** read the message; it ends with the failing field and reason (from a terminal, read `details.field` and `details.reason`). `payment_plan_not_found` means pick from `availablePaymentPlans`; `missing_unit_spec` means ask for the missing unit detail; `unit_not_in_project` means the unit belongs to another project, so search again; `invalid_assumption` means a what-if is out of range, so ask for a valid value; `currency_mismatch` means an amount is not in the evaluation currency (a price you send for a Dubai unit must be in AED; fees and rent must be in the price's currency, else the project's), so ask for it in that currency and use `displayCurrency` to show another. Fix the input and call again.
+- **`validation_error`:** read the message; it ends with the failing field and reason. `payment_plan_not_found` means pick from `availablePaymentPlans`; `missing_unit_spec` means ask for the missing unit detail; `unit_not_in_project` means the unit belongs to another project, so search again; `invalid_assumption` means a what-if is out of range, so ask for a valid value; `currency_mismatch` means an amount is not in the evaluation currency (a price you send for a Dubai unit must be in AED; fees and rent must be in the price's currency, else the project's), so ask for it in that currency and use `displayCurrency` to show another. Fix the input and call again.
 
 ## 3. Present the result
 
-Through the connector the result is `data`, with `meta` inside it. Start with what was evaluated: the unit, `schedule.plan.name`, the purchase date and the `inputs` (each with its `origin`: `default`, `request` or `data`), so the user sees which assumptions are defaults.
+The result is `data`, with `meta` inside it. Start with what was evaluated: the unit, `schedule.plan.name`, the purchase date and the `inputs` (each with its `origin`: `default`, `request` or `data`), so the user sees which assumptions are defaults.
 
 Then each block, in this order:
 
@@ -87,7 +79,7 @@ For every block:
 - Report its `status`. For `partial` or `unavailable`, give the `reasonCode` in plain words. An unavailable block is "unavailable", never zero, blank or a guess.
 - Give where its figures come from: `provenance.source`, `level`, `period`, `sampleSize` and `asOf`, when present.
 - Show each amount by its `formatted` label exactly as returned. A field Nogbase leaves out is "not available", not zero.
-- Show each rate (`{bps}`) by its `formatted` percent label exactly as returned. From a terminal there are no labels: 100 bps is 1%, so move the decimal point two places (1250 bps is 12.50%) and never round.
+- Show each rate (`{bps}`) by its `formatted` percent label exactly as returned.
 - Show `steps` only when the user asks how a figure was worked out: each step's `formula`, its `values` with units and its `result`, as returned. Never re-derive them.
 
 Verdicts (`verdicts`; handover verdicts carry their `scenario`) are statements of fact about that scenario, never advice. Write them as, for example, "In the 0% scenario, net proceeds at handover are above the cash paid by then" (`profitable_at_handover`), or "Net rent does not cover the after-handover instalments; a monthly top-up is needed" (`rent_short_of_instalments`). Scenarios are what-if value changes (Nogbase's defaults unless the user set them), not predictions.
@@ -111,13 +103,12 @@ Then offer next steps: another plan from `availablePaymentPlans`, other what-ifs
 
 ## Language and currency
 
-- Nogbase writes its own labels and server text (`formula`, `disclaimer`, `attribution`) in English and Arabic: `locale: "ar-AE"` (any `ar` tag) with `evaluate_unit`, `-H "Accept-Language: ar"` with `nogbase api`. `data.locale` (`en` or `ar`) says which was used. For any other language, you may translate your own wording and say that the translation is yours.
+- Nogbase writes its own labels and server text (`formula`, `disclaimer`, `attribution`) in English and Arabic: `locale: "ar-AE"` (any `ar` tag) with `evaluate_unit`. `data.locale` (`en` or `ar`) says which was used. For any other language, you may translate your own wording and say that the translation is yours.
 - When translating, never change numbers, currency labels, project, developer, unit or area names, or codes. Never reword the disclaimer or the attribution: show Nogbase's English or Arabic text next to your translation.
 - Never convert money yourself. Ask Nogbase to:
-  - **Show amounts in another currency:** `displayCurrency` on `evaluate_unit` (`-H "X-Display-Currency: USD"` or `?displayCurrency=USD` with `nogbase api`). Nogbase converts at platform rates and adds a `display` amount (also when the user has a saved display-currency preference), with its `rate`, `asOf` and `source`, to each money figure. Through the connector, show `display.formatted`, which already ends in "(approx.)", next to the original `formatted` label, and keep it marked approximate.
+  - **Show amounts in another currency:** `displayCurrency` on `evaluate_unit`. Nogbase converts at platform rates and adds a `display` amount (also when the user has a saved display-currency preference), with its `rate`, `asOf` and `source`, to each money figure. Show `display.formatted`, which already ends in "(approx.)", next to the original `formatted` label, and keep it marked approximate.
   - **No conversion returned** (no `display` amount, or a `display_currency_*` or `display_amount_out_of_range` warning in `meta.warnings`): Nogbase had no rate. Keep the original currency and say so.
   - **Percentages** (yields, returns, IRR, coverage, cushion) do not change with currency.
-- Money in API responses is `{amountMicros, currencyCode}`. From a terminal, without `formatted` labels, the amount is `amountMicros` ÷ 1,000,000 in that currency.
 
 ## Rules
 

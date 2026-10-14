@@ -1,0 +1,14 @@
+{
+  "name": "nogbase-api",
+  "displayName": "Nogbase API",
+  "version": "1.4.0",
+  "description": "The Nogbase API skill for coding agents with a terminal, such as Claude Code and Codex. It reads and changes your Nogbase workspace data through your own nogbase CLI sign-in (CLI 0.3.0 or later), at your request, and asks before deleting or bulk changes.",
+  "author": {
+    "name": "Nogbase Development",
+    "email": "support@nogbase.ae",
+    "url": "https://nogbase.ae"
+  },
+  "homepage": "https://nogbase.ae/ai-connectors",
+  "repository": "https://github.com/nogbase/nogbase-ai-plugin",
+  "keywords": ["real-estate", "api", "cli", "coding-agents", "brokers", "developers"]
+}

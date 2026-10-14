@@ -66,14 +66,14 @@ Offer next steps: a project brief for any option, or a sales offer for a specifi
 
 ## Language and currency
 
-- Nogbase writes its own labels and server text in English and Arabic (`locale: "ar-AE"` on connector tools; `-H "Accept-Language: ar"` with `nogbase api`). For any other language, you may translate your own wording and Nogbase's descriptions, and say that the translation is yours.
+- Nogbase writes its own labels and server text in English and Arabic (`locale: "ar-AE"` on connector tools). For any other language, you may translate your own wording and Nogbase's descriptions, and say that the translation is yours.
 - When translating, never change numbers, currency labels, project, developer, unit or area names, or codes. Never reword a disclaimer: show Nogbase's English or Arabic disclaimer next to your translation.
 - Never convert money yourself. Ask Nogbase to:
   - **The sales offer:** `currency` (the company's own rates, for its own document; disclosed in `offer.conversion`).
-  - **Other reads, including the investment evaluation:** the `X-Display-Currency` header (`-H "X-Display-Currency: USD"` with `nogbase api`) or `?displayCurrency=USD`. These use platform rates. Each money figure then carries a `display` amount with its rate, date and source; show it as approximate.
+  - **The investment evaluation:** `displayCurrency` on `evaluate_unit`. It uses platform rates. Each money figure then carries a `display` amount with its rate, date and source; show it as approximate.
   - **No conversion returned** (no `display` amount, or a `display_currency_*` warning in `meta.warnings`): Nogbase had no rate. Keep the original currency and say so.
   - **Percentages** (yields, growth, IRR, coverage) do not change with currency.
-- Money in API responses is `{amountMicros, currencyCode}`. The amount is `amountMicros` ÷ 1,000,000 in that currency.
+- Money in tool results is `{amountMicros, currencyCode}`. The amount is `amountMicros` ÷ 1,000,000 in that currency.
 
 ## Rules
 
