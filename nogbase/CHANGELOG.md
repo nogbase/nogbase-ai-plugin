@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.0
+
+New starter prompts for brokers: a shortlist for a buyer's brief with a
+payment-plan split, a one-page sales offer and a deal check. The sales offer
+skill can now write the offer as a short WhatsApp message (plain text, the
+plan as percentages, the disclaimer) and leaves out any section the company
+excludes from its offers. The client shortlist skill maps a plan split such as
+"60/40" to the payment-plan filters. The connector also offers ten ready-made
+broker prompts in hosts that list MCP prompts. Every example uses Nogbase's
+fictional demo projects.
+
 ## 1.4.0
 
 The Nogbase API skill moved to the separate Nogbase API plugin in the same

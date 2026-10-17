@@ -26,6 +26,7 @@ If the user's explicit instructions conflict with this skill, follow the user, e
 | Maximum paid before handover | `maxPreHandoverPercent` |
 | Minimum paid after handover | `postHandoverPercent` |
 | Wants (or refuses) a post-handover plan | `postHandoverOnly: true` (or `false`) |
+| A plan split such as "60/40" (paid before handover / on or after handover) | `maxPreHandoverPercent` with the first number (`60`); when the brief says the second share is paid after handover ("60/40 post-handover"), also `postHandoverOnly: true` |
 | Amenities | `amenities`: all must be offered; use the listed values (pool, gym, kids_play_area, bbq_area, parking, security, spa, garden, retail, restaurants, beach, jogging_track, pets_allowed, concierge, balcony, sports) or free text; at most 10 |
 | Only units available now | `inventoryOnly: true` |
 | Free-text project, developer, or area name | `query` |

@@ -1,8 +1,62 @@
 {
   "name": "app-6ab582e45b5481919e74c6db3f72a18f",
+  "description": "Nogbase real-estate workflows with five skills: Sales offer, Client shortlist, Project brief, Deal check and Nogbase API. The connector is read-only; the Nogbase API skill can change data through your signed-in nogbase CLI, within your permissions and at your request.",
   "capabilities": [
     "Read",
     "Write"
   ],
-  "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nVersion 1.4 includes five skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), and Nogbase API (for coding agents with a terminal, such as Claude Code and Codex: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector's tools read inventory your workspace may see. The Nogbase API skill can change data when you ask it to, within your own permissions. A Nogbase broker or developer account is required."
+  "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis package includes five skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), and Nogbase API (for coding agents with a terminal: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector's tools read inventory your workspace may see. The Nogbase API skill can change data when you ask it to, within your own permissions. A Nogbase broker or developer account is required.",
+  "review": {
+    "test_cases": {
+      "positive": [
+        {
+          "description": "P1 Broker: shortlist search by area, bedrooms and budget",
+          "prompt": "Find projects in Dubai Marina with two-bedroom units under AED 3,000,000.",
+          "tools_triggered": "search_inventory_locations, search_inventory_projects",
+          "expected_behavior": "Resolves Dubai Marina, then searches with locationId, bedrooms 2, priceMax 3000000 and currencyCode AED. Lists matching projects with developer, starting price and handover, and marks project-level matches whose live availability is unconfirmed."
+        },
+        {
+          "description": "P3 Broker: project details",
+          "prompt": "Tell me about Peace Lagoons: developer, location, unit mix and starting price.",
+          "tools_triggered": "get_inventory_project",
+          "expected_behavior": "Peace Homes Development; Dubai Land Residence Complex, Dubai; the unit mix and the starting price as Nogbase returns them."
+        },
+        {
+          "description": "P4 Broker: one-page sales offer at a quoted price",
+          "prompt": "Prepare a one-page sales offer for unit B827 in Peace Lagoons at AED 1,000,000 with my company letterhead and every payment-plan installment.",
+          "tools_triggered": "get_sales_offer_data, get_my_brand_context",
+          "expected_behavior": "An offer in the chat under the Nogbase Properties letterhead, with each payment plan's installments recalculated by Nogbase from AED 1,000,000 (for example 20% = AED 200,000). Nothing is stored or sent in Nogbase."
+        },
+        {
+          "description": "P5 Developer: own projects and recent inventory changes",
+          "prompt": "List my projects and tell me what changed in my inventory recently.",
+          "tools_triggered": "search_my_projects, list_inventory_updates",
+          "expected_behavior": "The Nogbase Development projects; the first update check returns a watermark and no history."
+        },
+        {
+          "description": "P6 Broker: investment estimate for one unit (evaluate_unit)",
+          "prompt": "Is unit B827 in Peace Lagoons a good investment if it rents for AED 90,000 a year? Show what the buyer would make selling at handover.",
+          "tools_triggered": "search_inventory_projects, search_inventory_units, evaluate_unit",
+          "expected_behavior": "Entry cost, payment schedule, market value from DLD sales, the sale at handover in each value scenario with verdicts stated as facts, break-even and yield from the given rent; every figure with its source and as-of date, plus Nogbase's disclaimer and attribution. An estimate, not advice; nothing is stored."
+        }
+      ],
+      "negative": [
+        {
+          "description": "N1: a write request the read-only connector cannot do",
+          "prompt": "Mark unit B827 in Peace Lagoons as sold."
+        },
+        {
+          "description": "N3: unrelated question",
+          "prompt": "What's the weather in Dubai today?"
+        },
+        {
+          "description": "N4: general maths that needs no Nogbase data",
+          "prompt": "Calculate the monthly mortgage payment on an AED 2,000,000 loan at 4.5% interest over 25 years."
+        }
+      ]
+    }
+  },
+  "publication": {
+    "release_notes": "Update 1.5.0 (includes the unpublished 1.4.0): adds the read-only Evaluate a unit tool (an investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer); five skills: Sales offer, Client shortlist, Project brief, Deal check and Nogbase API (the Nogbase API skill can change data through the user's own nogbase CLI sign-in); broker starter prompts; a WhatsApp message format for sales offers; and ten ready-made broker prompts offered as MCP prompts. Other tools and annotations unchanged."
+  }
 }

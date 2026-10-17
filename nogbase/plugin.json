@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nogbase",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Real-estate sales workflows on Nogbase: the Nogbase connector with four skills for branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, and deal checks that present Nogbase's investment estimate for a unit. Read-only: it reads only the projects and units your Nogbase workspace may see and never changes your data.",
   "author": {
     "name": "Nogbase Development",
@@ -23,7 +23,7 @@
       "interface": {
         "displayName": "Nogbase",
         "shortDescription": "Property search, offers & API",
-        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nVersion 1.4 includes four skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), and Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice).\n\nThe connector's tools only read inventory your workspace may see; they never change your data. A Nogbase broker or developer account is required.",
+        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis plugin includes four skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), and Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice).\n\nThe connector's tools only read inventory your workspace may see; they never change your data. A Nogbase broker or developer account is required.",
         "developerName": "Nogbase Development",
         "category": "Business & Operations",
         "capabilities": [
@@ -34,9 +34,9 @@
         "privacyPolicyURL": "https://nogbase.ae/privacy",
         "termsOfServiceURL": "https://nogbase.ae/terms",
         "defaultPrompt": [
-          "Prepare a one-page sales offer for this unit at AED 1,850,000 with my company letterhead.",
-          "Compare three projects for a client who wants a one-bedroom with at most 10% on booking.",
-          "Write a project brief for this project in Arabic."
+          "Find off-plan 2-bedroom apartments in Jumeirah Village Circle under AED 1,500,000 with a 60/40 payment plan.",
+          "Prepare a one-page sales offer for unit 518 in Hesperine Arena at AED 1,000,000 on my company letterhead.",
+          "Deal-check unit 518 in Hesperine Arena at a rent of AED 90,000 a year: what would the buyer make selling at handover?"
         ],
         "composerIcon": "./assets/logo.svg",
         "logo": "./assets/logo.svg"
