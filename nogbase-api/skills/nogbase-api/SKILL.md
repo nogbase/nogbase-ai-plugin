@@ -1,6 +1,6 @@
 ---
 name: nogbase-api
-description: Read and change Nogbase data through the Nogbase v1 API from a terminal, with the user's own sign-in, using the nogbase CLI. Use when you can run shell commands (Claude Code, Codex, a terminal agent) and the task needs Nogbase records, schemas, the change feed, audit history, or anything the Nogbase connector tools do not cover. Not for chat apps without a terminal.
+description: Read and change Nogbase data through the Nogbase v1 API from a terminal, with the user's own sign-in, using the nogbase CLI. Use when you can run shell commands (a coding agent with a terminal) and the task needs Nogbase records, schemas, the change feed, audit history, or anything the Nogbase connector tools do not cover. Not for chat apps without a terminal.
 ---
 
 # Nogbase API from the terminal

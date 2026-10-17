@@ -1,11 +1,11 @@
 ---
 name: sales-offer
-description: Prepare a branded real-estate sales offer for one Nogbase unit, with the quoted or list price, every payment-plan installment computed by Nogbase, offer terms and fees, and the company letterhead. Use when a broker or developer asks for a sales offer, price offer, quotation, or one-page offer for a specific unit or apartment in a Nogbase project, optionally at a quoted price, in another currency, or in Arabic.
+description: Prepare a branded real-estate sales offer for one Nogbase unit, with the quoted or list price, every payment-plan installment computed by Nogbase, offer terms and fees, and the company letterhead. Use when a broker or developer asks for a sales offer, price offer, quotation, or one-page offer for a specific unit or apartment in a Nogbase project, optionally at a quoted price, in another currency, in Arabic, or as a WhatsApp message.
 ---
 
 # Sales offer
 
-Build a sales offer for one unit from Nogbase data and write it in the conversation in the format the user asks for (message, table, document, or PDF when the host can produce one). Nogbase supplies every figure; you arrange and present them.
+Build a sales offer for one unit from Nogbase data and write it in the conversation in the format the user asks for (a WhatsApp message, another message, table, document, or PDF when the host can produce one). Nogbase supplies every figure; you arrange and present them.
 
 If the user's explicit instructions conflict with this skill, follow the user, except for the Rules at the end, which protect their data and their buyer.
 
@@ -80,6 +80,28 @@ When data is missing:
 - Any other missing figure (fees, handover, area): omit it or write "not provided by Nogbase". Never estimate.
 
 After the offer, tell the user in one line that Nogbase stored nothing and sent nothing, and that a stored, branded offer from the company's own template is created in the Nogbase Broker or Developer app.
+
+## 5. WhatsApp message
+
+When the user asks for a WhatsApp message or reply, write the offer as one message the broker can paste into the chat, from the same `get_sales_offer_data` and `get_my_brand_context` results:
+
+- Plain text only: no tables, no markdown headings, bold, or bullets. At most 1,000 characters, in short lines of one fact each. If it runs longer, leave out the fees first; never cut the disclaimer line.
+- In this order, each line only when the data has it:
+  1. Project and unit: `project.name`, then the unit number, type and area from `selectedUnit`.
+  2. Price: the same price label as the full offer (item 5 of section 4).
+  3. Booking amount: the booking step's `amountLabel`.
+  4. The plan in one line, "x% on booking / y% during construction / z% on handover / w% after handover", from the steps' `pct` grouped by their `dueLabel`; leave out a group the plan does not have. When a step's group is unclear, or the groups do not total 100%, list the steps (`pct` and `dueLabel`) instead. Use the plan the user names, otherwise the first in `paymentPlans`, and say in one line that the developer offers other plans when there are more.
+  5. Handover: `project.handoverLabel`, as the developer's published handover.
+  6. One or two key fees: `offer.dldFeeLabel`, `offer.adminFeeLabel` or `offer.validUntilLabel`.
+  7. The disclaimer line: "Figures from Nogbase as of `generatedOnLabel`. Prices, fees and dates can change; availability is confirmed at booking."
+  8. The broker's sign-off: `user.displayName`, `company.name` and `company.phone`.
+- Leave out any line whose section is `false` in `sections`, as in the full offer.
+- Greet the buyer by name only when the user gave the name. Never invent buyer contact details.
+- Add a link line only when the user supplies a link, at the place they ask for; never invent one.
+- Arabic on request: call `get_sales_offer_data` with `locale: "ar-AE"`, use its labels, and write the disclaimer line as "الأرقام من Nogbase بتاريخ `generatedOnLabel`. قد تتغير الأسعار والرسوم والمواعيد، ويُؤكَّد التوفر عند الحجز." Keep numbers (Western digits), currency codes, unit numbers and project names exactly as Nogbase returns them. Keep it safe for right-to-left display: one language per line where you can, and no direction marks, reversed punctuation, or emoji used for layout.
+- Add no selling lines that promise a return, rent or price rise.
+
+After the message, outside it, tell the user in one line that Nogbase stored nothing and sent nothing: the user sends the message from their own WhatsApp.
 
 ## Rules
 
