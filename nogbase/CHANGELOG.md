@@ -40,7 +40,7 @@ Adds the Nogbase API skill for coding agents with a terminal (needs nogbase CLI
 0.3.0 or later). The listing now says the plugin can change data through that
 skill; the connector's tools are unchanged and still only read.
 
-## 1.1.0 — prepared 2026-09-27, not yet submitted
+## 1.1.0
 
 Adds three skills on top of the unchanged 1.0 connector at
 `https://api.nogbase.ae/mcp`. No tool, input, scope, or annotation changes.
