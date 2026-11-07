@@ -15,6 +15,40 @@ marketplace for the Nogbase remote MCP connector
   (0.3.0 or later), can change data at the user's request, and declares no MCP
   server.
 
+## Install from the directory
+
+Nogbase is listed in both official directories:
+
+- **Claude** (claude.ai and the Claude apps): the
+  [Nogbase listing in the Claude directory](https://claude.ai/directory/nogbase)
+  offers both the Nogbase connector and the plugin. Open it, add it, sign in on
+  the Nogbase page and choose the workspace. Add it once on claude.ai; Nogbase
+  then appears in the Claude desktop and mobile apps as well.
+- **ChatGPT**: open
+  [Nogbase in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6ab582e45b5481919e74c6db3f72a18f)
+  (Nogbase · Property search & sales offers), choose **Install plugin**, sign
+  in on the Authorize Nogbase for ChatGPT page and choose **Approve**.
+
+Claude Code and Codex install the plugins from this repository's marketplace.
+
+Claude Code:
+
+```text
+/plugin marketplace add nogbase/nogbase-ai-plugin
+/plugin install nogbase@nogbase-ai
+```
+
+Codex:
+
+```bash
+codex plugin marketplace add nogbase/nogbase-ai-plugin
+codex plugin add nogbase@nogbase-ai
+```
+
+Any assistant can also add the connector by URL as a custom connector:
+`https://api.nogbase.ae/mcp`. Setup steps for each assistant are at
+[nogbase.ae/ai-connectors](https://nogbase.ae/ai-connectors).
+
 See [Publishing](#publishing) for the directory submissions.
 
 This directory is laid out to be published as **its own public GitHub

@@ -12,6 +12,19 @@ tasks into repeatable steps:
 | Project brief | A project summary with the developer's published handover, unit mix and starting prices, payment plans, amenities, brochures, and sales contacts, in English, Arabic, or both. |
 | Deal check | Nogbase's investment estimate for one off-plan unit: entry cost, the payment schedule, price against DLD sales, value scenarios with the sale at handover, break-even and, from a rent you give, the yield. Every figure shows its source and as-of date, with Nogbase's disclaimer; it is an estimate, not financial advice. |
 
+## Install
+
+- **Claude** (claude.ai and the Claude apps): the connector and this plugin,
+  [Nogbase in the Claude directory](https://claude.ai/directory/nogbase).
+- **ChatGPT**:
+  [Nogbase in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6ab582e45b5481919e74c6db3f72a18f).
+- **Claude Code**: `/plugin marketplace add nogbase/nogbase-ai-plugin`, then
+  `/plugin install nogbase@nogbase-ai`.
+- **Codex**: `codex plugin marketplace add nogbase/nogbase-ai-plugin`, then
+  `codex plugin add nogbase@nogbase-ai`.
+- **Any other assistant**: add the connector URL `https://api.nogbase.ae/mcp`
+  as a custom connector.
+
 <!-- prompts:start -->
 Try:
 
