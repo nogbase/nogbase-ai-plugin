@@ -14,7 +14,7 @@ tasks into repeatable steps:
 
 ## Install
 
-- **Claude** (claude.ai and the Claude apps):
+- **Claude** (claude.ai and the Claude apps): the connector and this plugin,
   [Nogbase in the Claude directory](https://claude.ai/directory/nogbase).
 - **ChatGPT**:
   [Nogbase in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6ab582e45b5481919e74c6db3f72a18f).

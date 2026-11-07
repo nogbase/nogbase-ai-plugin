@@ -19,11 +19,11 @@ marketplace for the Nogbase remote MCP connector
 
 Nogbase is listed in both official directories:
 
-- **Claude** (claude.ai and the Claude apps): open
-  [Nogbase in the Claude directory](https://claude.ai/directory/nogbase),
-  add it, sign in on the Nogbase page and choose the workspace. Add it once on
-  claude.ai; Nogbase then appears in the Claude desktop and mobile apps as
-  well.
+- **Claude** (claude.ai and the Claude apps): the
+  [Nogbase listing in the Claude directory](https://claude.ai/directory/nogbase)
+  offers both the Nogbase connector and the plugin. Open it, add it, sign in on
+  the Nogbase page and choose the workspace. Add it once on claude.ai; Nogbase
+  then appears in the Claude desktop and mobile apps as well.
 - **ChatGPT**: open
   [Nogbase in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6ab582e45b5481919e74c6db3f72a18f)
   (Nogbase · Property search & sales offers), choose **Install plugin**, sign
