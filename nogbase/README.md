@@ -2,7 +2,7 @@
 
 Nogbase helps real-estate brokers and property developers work with their
 Nogbase inventory, including off-plan projects, from their AI assistant. This
-plugin pairs the Nogbase connector with four skills that turn common sales
+plugin pairs the Nogbase connector with five skills that turn common sales
 tasks into repeatable steps:
 
 | Skill | What it does |
@@ -11,6 +11,7 @@ tasks into repeatable steps:
 | Client shortlist | Turns a buyer's brief (budget and currency, bedrooms, area, handover window, booking and post-handover limits) into filtered searches and compares three to five options in one table. |
 | Project brief | A project summary with the developer's published handover, unit mix and starting prices, payment plans, amenities, brochures, and sales contacts, in English, Arabic, or both. |
 | Deal check | Nogbase's investment estimate for one off-plan unit: entry cost, the payment schedule, price against DLD sales, value scenarios with the sale at handover, break-even and, from a rent you give, the yield. Every figure shows its source and as-of date, with Nogbase's disclaimer; it is an estimate, not financial advice. |
+| Nogbase actions | Changes in Nogbase, such as a unit's price, a note on a lead, a hold, or any other Nogbase API operation your role allows. It reads the record first, shows you the change in plain words, and makes it only after you say yes. Changes that need approval wait for it, and large jobs use Nogbase's own import and bulk tools with a preview first. |
 
 ## Install
 
@@ -57,24 +58,33 @@ Try:
 
 A Nogbase broker or developer account. When you first use the plugin, your AI
 application asks you to connect Nogbase: you sign in on the Nogbase page and
-choose the workspace (company) the connection may read.
+choose the workspace (company) the connection may use. To let the AI make
+changes, allow changes when you connect; a connection without that permission
+can only read, and you can reconnect later to allow changes.
 
 ## What the plugin connects to and what it does
 
 - It connects to one service, the Nogbase connector at
   `https://api.nogbase.ae/mcp`, over OAuth. It contains no scripts, hooks, or
   executables, and it sends nothing to any other destination.
-- The connector's tools only read. They cannot reserve, mark sold, change
-  prices, save, or send anything in Nogbase. Offers and briefs are written in
-  your conversation; Nogbase does not store them.
+- The connector reads and changes Nogbase data within your own permissions in
+  the connected workspace, and the skills ask you before each change. Every
+  change is recorded as yours, and changes that need approval wait for it.
+  Offers and briefs are written in your conversation; Nogbase does not store
+  them.
 - Results include only the projects and units your workspace may see. Locked
   projects show a short card until access is granted.
 - Opening a file stored in Nogbase creates a five-minute link and an audit
-  record, so the skills ask you before opening one.
-- Nogbase sends your AI application only what the tools return: inventory and
-  project data your workspace may read, file names and short-lived links, and
-  your company's public branding. It never sends personal email, bank, or tax
-  details.
+  record, so the skills ask you before opening one. An export (such as a CSV
+  of units) comes back as a link that expires after about 15 minutes; anyone
+  holding the link can open the file until then.
+- Nogbase sends your AI application only what the tools return: the Nogbase
+  data your workspace may read that you ask about (inventory, projects, leads
+  and other records), file names and short-lived links, your company's public
+  branding, and the results of the changes you confirm. Bank account,
+  identity-document, tax-number, password, token and API key fields are
+  removed. Contact details on a record you ask about, such as a lead's phone
+  number, are returned like its other fields.
 - Coding agents with a terminal, such as Claude Code and Codex, can read and
   change workspace data with the separate `nogbase-api` plugin in the same
   marketplace.

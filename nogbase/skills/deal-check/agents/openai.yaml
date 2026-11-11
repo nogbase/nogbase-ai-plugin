@@ -6,6 +6,6 @@ dependencies:
   tools:
     - type: "mcp"
       value: "nogbase"
-      description: "Nogbase remote connector (read-only inventory and the investment evaluation)"
+      description: "Nogbase remote connector (inventory and the investment evaluation)"
       transport: "streamable_http"
       url: "https://api.nogbase.ae/mcp"

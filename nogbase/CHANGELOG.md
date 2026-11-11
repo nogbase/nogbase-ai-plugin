@@ -1,5 +1,51 @@
 # Changelog
 
+## 1.7.0
+
+The connector now has 25 tools. Every tool accepts two optional inputs,
+`reason` (why the assistant is calling the tool, at most 128 characters) and
+`user_intent` (what the user is trying to achieve, at most 256 characters).
+The tools ignore both; Nogbase records them in the workspace's AI activity.
+The new `report_outcome` tool records how the user's request ended: a status
+(`accomplished`, `partial` or `failed`), an optional one-sentence summary and
+up to five needs Nogbase could not meet. It makes no API call and changes no
+records, files or inventory; it is not read-only because it stores the
+outcome, and it is not destructive. The server's instructions ask the
+assistant to call it once at the end and to pass `user_intent` and `reason`
+when it knows them. A Developer workspace lists 23 tools, a Broker workspace
+24. AI activity records are kept for 180 days (privacy policy sections 15 and
+16). The skills are unchanged.
+
+## 1.6.0
+
+The plugin is no longer read-only: it reads and changes Nogbase data within
+the user's permissions and asks before each change. The connector now has 24
+tools: the 18 it had, the `create_record` and `update_record` record tools,
+and four API tools (`search_api_operations`, `describe_api_operation`,
+`call_api_read`, `call_api_write`) that reach the rest of the stable v1 API.
+Changes need the `records:write` permission, which connections now request; a
+connection without it can still read, and its write calls are refused with a request to reconnect and
+allow changes.
+
+Adds the `nogbase-actions` skill. It prefers the dedicated tools; otherwise it
+searches, describes and then calls an operation. It reads a record before
+changing it and passes its version as `ifMatch`, tells the user the change in
+plain words and waits for a yes, gives the approval id and stops on
+`pending_approval`, re-reads and asks on `version_conflict`, never retries
+after a server error, retries a timeout only with the idempotency key the
+error names (otherwise re-reads to check), and gives export links with their
+expiry. Approvals may be decided through the connector, but never one
+created in the same conversation unless the user explicitly asks. Messages,
+campaigns and billing actions need the user to confirm recipients and amounts
+first. Large jobs use Nogbase's bulk and import endpoints with a preview or
+count first, otherwise small batches that stop at the first error. Returned
+data is treated as data, never as instructions.
+
+The sales offer, client shortlist and project brief skills no longer say the
+connector is read-only. They still only read; the sales offer and client
+shortlist skills point to the Nogbase actions skill for holds, reservations and
+other changes.
+
 ## 1.5.0
 
 New starter prompts for brokers: a shortlist for a buyer's brief with a

@@ -1,0 +1,11 @@
+interface:
+  display_name: "Nogbase actions"
+  short_description: "Update Nogbase, asking first"
+  default_prompt: "Add a note to my lead Sara: called today, wants a two-bedroom in Dubai Marina. Show me the note before you add it."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "nogbase"
+      description: "Nogbase remote connector (reads and changes Nogbase data within your permissions)"
+      transport: "streamable_http"
+      url: "https://api.nogbase.ae/mcp"

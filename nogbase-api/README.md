@@ -6,8 +6,9 @@ agent uses the `nogbase` command-line tool with your own sign-in, so it reads
 and changes records, schemas, the change feed, and audit history only when you
 ask, and only within your own permissions.
 
-For the Nogbase connector and the sales offer, client shortlist, project brief
-and deal check skills, install the `nogbase` plugin from the same marketplace.
+For the Nogbase connector and the sales offer, client shortlist, project
+brief, deal check and Nogbase actions skills, install the `nogbase` plugin
+from the same marketplace.
 
 ## Requirements
 
@@ -23,6 +24,10 @@ and deal check skills, install the `nogbase` plugin from the same marketplace.
 - It asks before deleting anything, before changing more than a handful of
   records, and before any change to users, API keys, permissions or workspace
   settings.
+- For many records it prefers Nogbase's own bulk and import jobs. Otherwise it
+  may write a script that runs `nogbase` commands in batches, resumes from a
+  checkpoint and reports what was done, skipped and failed; it shows you the
+  plan and the record count first.
 - The model never sees a token or API key. The CLI keeps your sign-in and
   calls the API; the skill only tells the agent which `nogbase` commands to
   run.

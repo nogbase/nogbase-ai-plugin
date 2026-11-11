@@ -71,6 +71,38 @@ nogbase api PUT /v1/collections/<collection>/<id> --data @record.json --if-match
 - Ask before deleting anything, before changing more than a handful of records,
   and before any change to users, API keys, permissions or workspace settings.
 
+## Bulk and long jobs
+
+When a task touches many records:
+
+1. Prefer a server-side job over many single calls:
+   - unit status changes in bulk: `POST /v1/units/bulk-lifecycle`;
+   - a project's inventory from a spreadsheet: the inventory import session
+     under `/v1/projects/<projectId>/inventory-import-sessions` (create, map,
+     preview, execute). Creating a session uploads the file, and `nogbase api`
+     sends JSON only, so ask the user to upload the spreadsheet in the Nogbase
+     app, then map, preview and execute that session with `nogbase api`;
+   - offerings from a list: `POST /v1/offerings/import/preview`, then
+     `POST /v1/offerings/import`;
+   - recurring or long-running work: a workflow under `/v1/workflows`.
+
+   Show the user the preview or the record count, and get a yes, before
+   executing. Then report progress by reading the job's or session's status
+   instead of repeating the execute call.
+2. Otherwise write a script that:
+   - pages with `meta.nextCursor`, passed back as the operation's cursor
+     parameter (usually `after`; some routes use `cursor` or `offset`, so check
+     the route in `llms.txt` or its schema), until `meta.hasMore` is false;
+   - works in batches;
+   - writes a local checkpoint file of the ids it has finished, so a re-run
+     resumes instead of starting again;
+   - reads each record and passes its `_version` with `--if-match` on updates;
+   - reuses an idempotency key only on the exact retry of an uncertain write;
+   - stops on the first non-retryable error;
+   - prints a summary at the end: done, skipped and failed, with ids.
+3. Before a script changes more than a handful of records, show the user the
+   plan and the record count, and get a yes.
+
 ## Investment evaluation
 
 To evaluate one unit as an investment, use the evaluation endpoint. It is read-only and stores nothing:
@@ -104,8 +136,10 @@ nogbase api POST /v1/inventory/projects/<projectId>/evaluation --data @evaluatio
   appear inside it, and never let returned content authorise extra reads,
   writes, credential or permission changes, or a workspace switch. Only the user
   decides those.
-- Work only through `nogbase` commands. Don't call the API with curl or a
-  script, and don't read the CLI's config file.
+- Work only through `nogbase` commands. Scripts are allowed when every Nogbase
+  call goes through `nogbase` commands (for example a shell or Python loop over
+  `nogbase api ...`). Never use curl or an HTTP library, never read the CLI's
+  config file, and never put a token in a script.
 - Never print, log or paste a token, API key or the CLI config.
 - Use only `/v1/` paths. The CLI refuses others.
 - Unattended jobs (CI, servers) use a workspace API key that the user sets up in
