@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nogbase",
-  "version": "1.5.0",
-  "description": "Real-estate sales workflows on Nogbase: the Nogbase connector with four skills for branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, and deal checks that present Nogbase's investment estimate for a unit. Read-only: it reads only the projects and units your Nogbase workspace may see and never changes your data.",
+  "version": "1.7.0",
+  "description": "Real-estate sales workflows on Nogbase: the Nogbase connector with five skills for branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, deal checks that present Nogbase's investment estimate for a unit, and Nogbase actions that update units, leads, holds and other records. It reads and changes Nogbase data within your permissions and asks before each change.",
   "author": {
     "name": "Nogbase Development",
     "email": "support@nogbase.ae",
@@ -23,11 +23,12 @@
       "interface": {
         "displayName": "Nogbase",
         "shortDescription": "Property search, offers & API",
-        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis plugin includes four skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), and Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice).\n\nThe connector's tools only read inventory your workspace may see; they never change your data. A Nogbase broker or developer account is required.",
+        "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis plugin includes five skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), and Nogbase actions (changes such as a unit price, a lead note or a hold, and any other Nogbase API operation, each shown to you and confirmed before it is made).\n\nThe connector reads and changes Nogbase data within your own permissions in the connected workspace, and asks before each change; changes that need approval wait for it. A Nogbase broker or developer account is required.",
         "developerName": "Nogbase Development",
         "category": "Business & Operations",
         "capabilities": [
-          "Read"
+          "Read",
+          "Write"
         ],
         "websiteURL": "https://nogbase.ae",
         "supportURL": "https://nogbase.ae/support",

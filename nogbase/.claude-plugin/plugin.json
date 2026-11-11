@@ -1,8 +1,8 @@
 {
   "name": "nogbase",
   "displayName": "Nogbase",
-  "version": "1.5.0",
-  "description": "Real-estate sales workflows on Nogbase: the Nogbase connector with four skills for branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, and deal checks that present Nogbase's investment estimate for a unit. Read-only: it reads only the projects and units your Nogbase workspace may see and never changes your data.",
+  "version": "1.7.0",
+  "description": "Real-estate sales workflows on Nogbase: the Nogbase connector with five skills for branded sales offers with every payment-plan installment, client shortlists from a buyer brief, project briefs in English or Arabic, deal checks that present Nogbase's investment estimate for a unit, and Nogbase actions that update units, leads, holds and other records. It reads and changes Nogbase data within your permissions and asks before each change.",
   "author": {
     "name": "Nogbase Development",
     "email": "support@nogbase.ae",

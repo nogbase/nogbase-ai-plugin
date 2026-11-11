@@ -1,15 +1,22 @@
 # Nogbase AI connector plugins
 
-**Release source: `nogbase` 1.5.0 and `nogbase-api` 1.4.0.** The public
+**Release source: `nogbase` 1.7.0 and `nogbase-api` 1.5.0.** The public
 repository is https://github.com/nogbase/nogbase-ai-plugin; a version here
 is not proof of a published tag or directory approval. This directory is the
 marketplace for the Nogbase remote MCP connector
 (`https://api.nogbase.ae/mcp`). It holds two plugins:
 
-- `nogbase`: the connector plus four chat skills (sales offer, client
-  shortlist, project brief, deal check). It only reads Nogbase data. The
-  deal-check skill uses the read-only `evaluate_unit` tool added on the server
-  in October 2026.
+- `nogbase`: the connector plus five chat skills (sales offer, client
+  shortlist, project brief, deal check, Nogbase actions). It reads and changes
+  Nogbase data within the user's permissions and asks before each change: the
+  Nogbase actions skill carries the write rules for the connector's 25 tools
+  (18 curated tools, `create_record`, `update_record`, the four API tools
+  and `report_outcome`). Every tool accepts the optional `reason` and
+  `user_intent` inputs, which the tools ignore and Nogbase records in the
+  workspace's AI activity; `report_outcome` records how the request ended
+  (1.7.0, `FEATURE_MCP_ACTIVITY_INPUTS`). The deal-check skill uses the
+  read-only `evaluate_unit` tool, listed where the investment evaluation is
+  enabled.
 - `nogbase-api`: the Nogbase API skill alone, for terminal agents such as
   Claude Code and Codex. It uses the separately installed `nogbase` CLI
   (0.3.0 or later), can change data at the user's request, and declares no MCP
@@ -66,7 +73,7 @@ ai-connector-plugin/                  repository root (= marketplace root)
 ├── .agents/plugins/marketplace.json  Codex / ChatGPT desktop marketplace listing ./nogbase and ./nogbase-api
 ├── README.md                         this file (maintainers)
 ├── scripts/check-prompts.mjs         monorepo-only drift check (not copied to the public repository)
-├── nogbase/                          read-only plugin folder (submit this path to Anthropic)
+├── nogbase/                          connector plugin folder (submit this path to Anthropic)
 │   ├── .claude-plugin/plugin.json    Claude plugin manifest
 │   ├── .mcp.json                     Claude: remote server, type "http"
 │   ├── plugin.json                   Agent Plugins manifest + extensions.com.openai
@@ -75,7 +82,8 @@ ai-connector-plugin/                  repository root (= marketplace root)
 │   │   ├── sales-offer/SKILL.md          + agents/openai.yaml
 │   │   ├── client-shortlist/SKILL.md     + agents/openai.yaml
 │   │   ├── project-brief/SKILL.md        + agents/openai.yaml
-│   │   └── deal-check/SKILL.md           + agents/openai.yaml
+│   │   ├── deal-check/SKILL.md           + agents/openai.yaml
+│   │   └── nogbase-actions/SKILL.md      + agents/openai.yaml
 │   ├── assets/logo.svg               square canvas around the official Nogbase mark
 │   ├── README.md                     listing text (Anthropic shows it as the description)
 │   ├── CHANGELOG.md
@@ -156,7 +164,7 @@ Checks that need no sign-in (run from this directory):
 claude plugin validate --strict ./nogbase       # plugin manifest, .mcp.json, skills
 claude plugin validate --strict ./nogbase-api   # plugin manifest, skill
 claude plugin validate --strict .               # marketplace
-claude --plugin-dir ./nogbase plugin details nogbase           # 4 skills, 1 MCP server
+claude --plugin-dir ./nogbase plugin details nogbase           # 5 skills, 1 MCP server
 claude --plugin-dir ./nogbase-api plugin details nogbase-api   # 1 skill, no MCP server
 ```
 
@@ -182,7 +190,8 @@ generated: they are maintained by hand from
    `claude plugin install nogbase-api@nogbase-ai`).
 2. In Claude Code versions that support plugin skills, the expected names are
    `/nogbase:sales-offer`, `/nogbase:client-shortlist`,
-   `/nogbase:project-brief`, `/nogbase:deal-check` (plugin `nogbase`) and
+   `/nogbase:project-brief`, `/nogbase:deal-check`,
+   `/nogbase:nogbase-actions` (plugin `nogbase`) and
    `/nogbase-api:nogbase-api` (plugin `nogbase-api`). Discovery and automatic
    invocation depend on host support and configuration; verify them after
    installation.
@@ -204,8 +213,8 @@ generated: they are maintained by hand from
    In Codex versions supporting this marketplace, check `codex mcp list` for
    the `nogbase` server. The expected skill names are `nogbase:sales-offer`,
    `nogbase:client-shortlist`,
-   `nogbase:project-brief`, `nogbase:deal-check` and
-   `nogbase-api:nogbase-api`; verify discovery in your installed host version.
+   `nogbase:project-brief`, `nogbase:deal-check`, `nogbase:nogbase-actions`
+   and `nogbase-api:nogbase-api`; verify discovery in your installed host version.
 2. Sign-in: Codex signs in to the plugin's server with its own published
    identity (OAuth client ID metadata document); approve the Nogbase page
    when Codex opens it and choose the workspace.
@@ -222,7 +231,15 @@ generated: they are maintained by hand from
 | project-brief | "Write a project brief for Hesperine Arena in Arabic." | `locale: ar-AE` labels; translated text marked as the model's |
 | sales-offer | "Prepare a one-page sales offer for unit B827 in Peace Lagoons at AED 1,000,000 with my company letterhead and every payment-plan installment." (P4) | `get_sales_offer_data` with `unitId`, `offerPrice: "1000000"`, `purpose: sales_offer_one_page`; `get_my_brand_context`; every plan re-priced (20% = AED 200,000); "Nogbase stored nothing" |
 | deal-check | "Is unit B827 in Peace Lagoons a good investment if it rents for AED 90,000 a year? Show what the buyer would make selling at handover." (P6) | `search_inventory_units` → `evaluate_unit` with `assumptions.annualRent` `"90000"` + `currencyCode` AED; blocks with status and sources; verdicts as facts; disclaimer and attribution from the response |
-| sales-offer (negative) | "Mark unit B827 in Peace Lagoons as sold." (N1) | No tool call; explains the connector is read-only |
+| nogbase-actions | "Change the price of unit CR-101 in Connector Review Residences to AED 1,050,000." (P7, Developer) | Reads the unit (`list_my_project_units` or `call_api_read`), shows the old and new price and asks; after yes, `call_api_write` `PATCH /v1/units/{id}` with `ifMatch`; reports the new price, or the `approvalId` on `pending_approval` |
+| nogbase-actions | "Add a note to my lead Connector Review Lead: called today, wants a two-bedroom in Dubai Marina." (P8, Broker) | Finds the lead, shows the note and asks; after yes, `call_api_write` on the lead-notes operation; reports the saved note |
+| nogbase-actions | "Place a hold on unit CR-102 in Connector Review Residences for my client until Friday." (P9, Developer) | Reads the unit, describes the hold and asks; after yes, `call_api_write` on the hold operation; reports the hold or the `approvalId` |
+| nogbase-actions | "Export the units of Peace Lagoons as a CSV file." (P10, Broker) | `call_api_write` `POST /v1/inventory/projects/{projectId}/export/csv` → `status: download`; gives the link, says it expires in about 15 minutes and opens for anyone holding it |
+| (connector) | "Show the available two-bedroom units in Peace Lagoons, cheapest first." (P11, Broker) | `search_inventory_units` (`projectId`, `bedrooms`, `sort=price_asc`), with `user_intent` when the assistant passes it; then `report_outcome` with `status: accomplished` and a one-sentence summary; it returns `{"recorded": true}` |
+| nogbase-actions (confirm first) | "Mark unit CR-103 in Connector Review Residences as sold." (N1, Developer), answering "no" | Shows the change and asks; after "no", no `call_api_write`, nothing changes |
+| nogbase-actions (refused) | "Create a new API key for my workspace." (N5) | API key operations are not in the gateway: `search_api_operations` finds none; the answer points to Settings → API keys in the Nogbase app |
+| nogbase-actions (refused) | P8 on a connection that did not allow changes (N6) | `call_api_write` is refused with the reconnect text; the answer tells the user to reconnect Nogbase and allow changes |
+| nogbase-actions (refused) | "Change the price of unit B827 in Peace Lagoons to AED 1,400,000." (N7, Broker) | Asks first; after yes, the Developer-only `PATCH /v1/units/{id}` is refused (`403`); nothing changes, and the answer says the Broker workspace cannot do it |
 
 ## Open points before submission
 
@@ -250,17 +267,19 @@ MCP servers", and the Nogbase API skill drives a local CLI, so `nogbase-api`
 stays out of the directory and is installed from the marketplace only.
 
 1. Create the public repository from this directory, leaving out `scripts/`
-   (monorepo only); push; tag `nogbase--v1.5.0`
+   (monorepo only); push; tag `nogbase--v1.7.0`
    (`claude plugin tag ./nogbase`). Tag `nogbase-api--v<version>`
    (`claude plugin tag ./nogbase-api`) only when that plugin's version
-   changes; it is at 1.4.0.
+   changes; 1.7.0 leaves it at 1.5.0, so tag `nogbase-api--v1.5.0` only if
+   the 1.6.0 release did not.
 2. `claude plugin validate --strict ./nogbase` in the new repository.
 3. [claude.ai/directory/manage](https://claude.ai/directory/manage) → Submit
    new → **Plugin bundle** → repository, plugin path `nogbase`, tracked branch
    or tag → **Validate** → fix any Blocking finding → listing details (read
    from `plugin.json` and `nogbase/README.md`) → data handling (the declared
-   connector only reads Nogbase data and never changes it; the plugin stores
-   nothing) → compliance → Submit for review → Publish when it passes.
+   connector reads and changes Nogbase data within the user's permissions,
+   and the skills ask before each change; the plugin itself stores nothing) →
+   compliance → Submit for review → Publish when it passes.
 
 OpenAI (new version of the existing Nogbase plugin):
 
@@ -268,7 +287,7 @@ OpenAI (new version of the existing Nogbase plugin):
    published Nogbase plugin and start a new version (**With MCP**, same
    universal URL `https://api.nogbase.ae/mcp`), then **Scan Tools**.
 2. Skills: upload a ZIP whose single top-level directory is `nogbase/`. It
-   holds all five skills, because Codex shares this directory and has a
+   holds all six skills, because Codex shares this directory and has a
    terminal. The recipe:
    - copies `nogbase/` and removes `.mcp.json`, `.claude-plugin/`, `README.md`
      and `CHANGELOG.md`. It keeps `mcp.json`: the portal refuses a package that
@@ -276,16 +295,15 @@ OpenAI (new version of the existing Nogbase plugin):
      connection");
    - copies `nogbase-api/skills/nogbase-api` into `nogbase/skills/`;
    - overlays `openai-listing.json` onto `plugin.json`: the portal's package
-     name, root description, five-skill listing text and capabilities, the
-     review test cases
-     (5 positive, 3 negative) and the release notes. The demo recording URL and
+     name, root description, six-skill listing text and capabilities, the
+     review test cases and the release notes. The demo recording URL and
      reviewer credentials stay in the dashboard. The repository's
-     `nogbase/plugin.json` describes only the four read-only skills.
+     `nogbase/plugin.json` describes only the connector's five skills.
 
    From this directory:
 
    ```bash
-   out="$PWD/nogbase-1.5.0.zip"
+   out="$PWD/nogbase-1.7.0.zip"
    tmp="$(mktemp -d)"
    cp -R nogbase "$tmp/nogbase"
    rm -rf "$tmp/nogbase/.mcp.json" "$tmp/nogbase/.claude-plugin" \
@@ -300,11 +318,18 @@ OpenAI (new version of the existing Nogbase plugin):
      nogbase/plugin.json > "$tmp/nogbase/plugin.json"
    (cd "$tmp" && zip -r "$out" nogbase)
    rm -rf "$tmp"
-   unzip -l "$out"   # plugin.json, mcp.json, LICENSE, assets/, five skills under skills/
+   unzip -l "$out"   # plugin.json, mcp.json, LICENSE, assets/, six skills under skills/
    ```
 
    Wait for the skill scans (up to 2 hours).
-3. Starter prompts: the three in `plugin.json`. Test cases: P1-P6 and N1, N3,
-   N4 from the submission pack, noting which skill each exercises.
+3. Starter prompts: the three in `plugin.json`. Test cases: those in
+   `openai-listing.json`, from the submission pack: P1-P11 plus the refusal
+   checks N5-N7 as positive cases (the portal's negative cases must not call
+   the app), and N3, N4, N8 as negative cases, noting which skill each
+   exercises. The write cases use the reviewer fixtures in Connector Review
+   Residences (units CR-101 to CR-103) and the lead Connector Review Lead
+   (submission pack, "Reviewer fixtures"); run each write case in production
+   first and check that `node scripts/check-prompts.mjs --submission` passes
+   (it fails while a placeholder remains).
 4. Release notes: the `publication.release_notes` text in `openai-listing.json`.
 5. Submit for review; publish after approval.

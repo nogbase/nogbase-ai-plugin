@@ -1,11 +1,11 @@
 {
   "name": "app-6ab582e45b5481919e74c6db3f72a18f",
-  "description": "Nogbase real-estate workflows with five skills: Sales offer, Client shortlist, Project brief, Deal check and Nogbase API. The connector is read-only; the Nogbase API skill can change data through your signed-in nogbase CLI, within your permissions and at your request.",
+  "description": "Nogbase real-estate workflows with six skills: Sales offer, Client shortlist, Project brief, Deal check, Nogbase actions and Nogbase API. It reads and changes Nogbase data within your permissions and asks before each change; the Nogbase API skill works through your signed-in nogbase CLI.",
   "capabilities": [
     "Read",
     "Write"
   ],
-  "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis package includes five skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), and Nogbase API (for coding agents with a terminal: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector's tools read inventory your workspace may see. The Nogbase API skill can change data when you ask it to, within your own permissions. A Nogbase broker or developer account is required.",
+  "longDescription": "Nogbase helps real-estate brokers and property developers work with their Nogbase inventory, including off-plan projects. Search projects and units by area, developer, bedrooms, budget and currency, handover date, amenities, and payment-plan terms; compare projects for a client; read project details, brochures, and images; and prepare a sales offer or project brief with every payment-plan installment and your company letterhead. Developers can also review their own projects and recent inventory changes.\n\nThis package includes six skills that guide these workflows step by step: Sales offer (a branded offer for one unit at the quoted price, with every installment computed by Nogbase), Client shortlist (a buyer brief turned into filtered searches and a side-by-side comparison), Project brief (a project summary in English, Arabic, or both), Deal check (Nogbase's investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer; an estimate, not advice), Nogbase actions (changes such as a unit price, a lead note or a hold, and any other Nogbase API operation, each shown to you and confirmed before it is made), and Nogbase API (for coding agents with a terminal: they read and change your Nogbase workspace through the nogbase CLI with your own sign-in, and ask before deleting or bulk changes).\n\nThe connector reads and changes Nogbase data within your own permissions in the connected workspace, and asks before each change; changes that need approval wait for it. The Nogbase API skill does the same from a terminal. Nogbase keeps a record of the connector's activity in your workspace, including the optional reason and request summary the assistant sends and how the request ended, for 180 days (see the privacy policy). A Nogbase broker or developer account is required.",
   "review": {
     "test_cases": {
       "positive": [
@@ -38,13 +38,57 @@
           "prompt": "Is unit B827 in Peace Lagoons a good investment if it rents for AED 90,000 a year? Show what the buyer would make selling at handover.",
           "tools_triggered": "search_inventory_projects, search_inventory_units, evaluate_unit",
           "expected_behavior": "Entry cost, payment schedule, market value from DLD sales, the sale at handover in each value scenario with verdicts stated as facts, break-even and yield from the given rent; every figure with its source and as-of date, plus Nogbase's disclaimer and attribution. An estimate, not advice; nothing is stored."
+        },
+        {
+          "description": "P7 Developer: change one unit's price, confirmed first",
+          "prompt": "Change the price of unit CR-101 in Connector Review Residences to AED 1,050,000.",
+          "tools_triggered": "search_my_projects, list_my_project_units, search_api_operations, describe_api_operation, call_api_write",
+          "expected_behavior": "Reads the unit and shows its current and new price, then asks. After the user's yes, calls PATCH /v1/units/{id} through call_api_write with the unit's version as ifMatch and reports the new price as Nogbase returns it, or gives the approvalId when the change waits for approval."
+        },
+        {
+          "description": "P8 Broker: add a note to a lead, confirmed first",
+          "prompt": "Add a note to my lead Connector Review Lead: called today, wants a two-bedroom in Dubai Marina.",
+          "tools_triggered": "search_api_operations, call_api_read, call_api_write",
+          "expected_behavior": "Finds the lead, shows the note it will add and asks. After the user's yes, adds it through the lead-notes operation and reports the saved note."
+        },
+        {
+          "description": "P9 Developer: place a hold on a unit, confirmed first",
+          "prompt": "Place a hold on unit CR-102 in Connector Review Residences for my client until Friday.",
+          "tools_triggered": "list_my_project_units, describe_api_operation, call_api_write",
+          "expected_behavior": "Reads the unit, describes the hold and asks. After the user's yes, places it through the hold operation and reports the hold as Nogbase returns it, or the approvalId when it waits for approval."
+        },
+        {
+          "description": "P10 Broker: export a project's units as a download link",
+          "prompt": "Export the units of Peace Lagoons as a CSV file.",
+          "tools_triggered": "search_inventory_projects, call_api_write",
+          "expected_behavior": "Runs POST /v1/inventory/projects/{projectId}/export/csv and gets status download. Gives the link and says it expires in about 15 minutes and that anyone holding it can open the file until then. The file itself is not in the chat."
+        },
+        {
+          "description": "P11 Broker: a search that ends with report_outcome",
+          "prompt": "Show the available two-bedroom units in Peace Lagoons, cheapest first.",
+          "tools_triggered": "search_inventory_units, report_outcome",
+          "expected_behavior": "Searches Peace Lagoons with bedrooms 2 and sort price_asc (optionally passing user_intent and reason) and lists the available two-bedroom units, cheapest first (production: B827 at AED 1,526,000). Then, following the server instructions, calls report_outcome once with status accomplished and a one-sentence summary; it returns {\"recorded\": true}, makes no API call and changes no records, files or inventory."
+        },
+        {
+          "description": "N5 refusal: an excluded operation",
+          "prompt": "Create a new API key for my workspace.",
+          "tools_triggered": "search_api_operations",
+          "expected_behavior": "Refused: no API key operation is offered (excluded operations answer as not found), so no key is created; the answer points to Settings, API keys, in the Nogbase app."
+        },
+        {
+          "description": "N6 refusal: a write on a connection that did not allow changes",
+          "prompt": "Add a note to my lead Connector Review Lead: called today, wants a two-bedroom in Dubai Marina.",
+          "tools_triggered": "call_api_write",
+          "expected_behavior": "Refused: on a connection without the records:write permission the write fails with a message to reconnect Nogbase and allow changes; nothing changes, and the answer tells the user to reconnect and allow changes."
+        },
+        {
+          "description": "N7 refusal: a Broker calling a Developer-only write",
+          "prompt": "Change the price of unit B827 in Peace Lagoons to AED 1,400,000.",
+          "tools_triggered": "search_inventory_units, call_api_write",
+          "expected_behavior": "Refused: asks first; after the user's yes, PATCH /v1/units/{id} answers 403 because the Broker workspace cannot call it; nothing changes, and the answer says so without claiming the price changed."
         }
       ],
       "negative": [
-        {
-          "description": "N1: a write request the read-only connector cannot do",
-          "prompt": "Mark unit B827 in Peace Lagoons as sold."
-        },
         {
           "description": "N3: unrelated question",
           "prompt": "What's the weather in Dubai today?"
@@ -52,11 +96,15 @@
         {
           "description": "N4: general maths that needs no Nogbase data",
           "prompt": "Calculate the monthly mortgage payment on an AED 2,000,000 loan at 4.5% interest over 25 years."
+        },
+        {
+          "description": "N8: a writing task that needs no Nogbase data",
+          "prompt": "Draft a polite email declining a meeting invitation for next Tuesday."
         }
       ]
     }
   },
   "publication": {
-    "release_notes": "Update 1.5.0 (includes the unpublished 1.4.0): adds the read-only Evaluate a unit tool (an investment estimate for one unit from DLD sales, with sources, as-of dates and a disclaimer); five skills: Sales offer, Client shortlist, Project brief, Deal check and Nogbase API (the Nogbase API skill can change data through the user's own nogbase CLI sign-in); broker starter prompts; a WhatsApp message format for sales offers; and ten ready-made broker prompts offered as MCP prompts. Other tools and annotations unchanged."
+    "release_notes": "Update 1.7.0 (includes the unpublished 1.6.0): the connector can now change Nogbase data within the user's permissions, asking before each change. Adds the create_record and update_record tools and four API tools (search_api_operations, describe_api_operation, call_api_read, call_api_write) for the rest of Nogbase's stable v1 API, the records:write permission, and the Nogbase actions skill (six skills in all). Changes that need approval wait for it; exports come back as short-lived download links. Every tool now accepts two optional inputs, reason (at most 128 characters) and user_intent (at most 256 characters), which the tools ignore and Nogbase records in the workspace's AI activity; the new report_outcome tool records how the user's request ended (status, a one-sentence summary, up to five unmet needs) and changes no records. AI activity records are kept for 180 days and are described in sections 15 and 16 of https://nogbase.ae/privacy. Each workspace lists only the tools it can call (23 for a developer, 24 for a broker; 25 in all)."
   }
 }
